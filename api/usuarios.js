@@ -77,6 +77,6 @@ api.post("/edituser/:userid", async (req, res) => {
 });
 
 // DELETE /usuarios/eliminar
-api.delete()
+//api.delete();
 
 export default api;
