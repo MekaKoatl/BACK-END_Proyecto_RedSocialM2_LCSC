@@ -4,11 +4,12 @@ import { MongoClient } from "mongodb";
 // const client = new MongoClient(
 //   "mongodb://admin:admin123@localhost:27017/?authSource=admin",
 // );
-const client = new MongoClient(process.env.MONGODB_URI);
+console.log(process.env.MONGODB_URI)
 let db;
 
 export async function connectDB() {
-  await client.connect();
+ const client = await MongoClient.connect(process.env.MONGODB_URI);
+
   db = client.db("red-social");
   // console.log("MongoDB local conectado");
   console.log("MongoDB Atlas conectado");

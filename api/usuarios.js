@@ -8,14 +8,13 @@ const api = express.Router();
 api.post("/registro", async (req, res) => {
   try {
     const { username, email, password } = req.body;
-    const db = getDB();
 
-    const existe = await db.collection("usuarios").findOne({ email });
+    const existe = await req.app.locals.db.collection("usuarios").findOne({ email });
     if (existe)
       return res.status(400).json({ message: "El correo ya está registrado" });
 
     const hash = await bcrypt.hash(password, 10);
-    const result = await db
+    const result = await req.app.locals.db
       .collection("usuarios")
       .insertOne({ username, email, password: hash, createdAt: new Date() });
 
@@ -31,7 +30,7 @@ api.post("/login", async (req, res) => {
     const { email, password } = req.body;
     const db = getDB();
 
-    const usuario = await db.collection("usuarios").findOne({ email });
+    const usuario = await  req.app.locals.db.collection("usuarios").findOne({ email });
     if (!usuario)
       return res.status(404).json({ message: "Usuario no encontrado" });
 
