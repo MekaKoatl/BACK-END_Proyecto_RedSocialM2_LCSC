@@ -1,5 +1,4 @@
 import express from "express";
-import { getDB } from "../index.js";
 import { ObjectId } from "mongodb";
 
 const api = express.Router();

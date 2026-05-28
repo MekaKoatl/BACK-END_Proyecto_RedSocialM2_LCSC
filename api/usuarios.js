@@ -1,6 +1,6 @@
 import express from "express";
 import bcrypt from "bcryptjs";
-import { getDB } from "../index.js";
+import { ObjectId } from "mongodb";
 
 const api = express.Router();
 
@@ -8,19 +8,17 @@ const api = express.Router();
 api.post("/register", async (req, res) => {
   try {
     const { username, email, password } = req.body;
-    const db = getDB();
+    const db = req.app.locals.db;
 
     if (!username || !email || !password)
       return res.status(400).send({ message: "Faltan datos obligatorios" });
 
-    const existemail = await req.app.locals.db
-      .collection("usuarios")
-      .findOne({ email });
+    const existemail = await db.collection("usuarios").findOne({ email });
     if (existemail)
       return res.status(400).json({ message: "El correo ya está registrado" });
 
     const hash = await bcrypt.hash(password, 10);
-    const result = await req.app.locals.db
+    const result = await db
       .collection("usuarios")
       .insertOne({ username, email, password: hash, createdAt: new Date() });
 
@@ -34,11 +32,9 @@ api.post("/register", async (req, res) => {
 api.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-    const db = getDB();
+    const db = req.app.locals.db;
 
-    const usuario = await req.app.locals.db
-      .collection("usuarios")
-      .findOne({ email });
+    const usuario = await db.collection("usuarios").findOne({ email });
     if (!usuario)
       return res.status(404).json({ message: "Usuario no encontrado" });
 
@@ -55,28 +51,51 @@ api.post("/login", async (req, res) => {
   }
 });
 
-// POST /usuarios/editar
-api.post("/edituser/:userid", async (req, res) => {
+// PUT /usuarios/edituser/:userid
+api.put("/edituser/:userid", async (req, res) => {
   try {
-    const userid = req.params._id;
+    const userid = req.params.userid;
     const { username, email, password } = req.body;
     const db = req.app.locals.db;
+
+    // Verificar que el usuario existe
+    const usuario = await db
+      .collection("usuarios")
+      .findOne({ _id: new ObjectId(userid) });
+    if (!usuario)
+      return res.status(404).json({ message: "Usuario no encontrado" });
 
     const campos = {};
     if (username) campos.username = username;
     if (email) campos.email = email;
-    if (password) campos.password = password;
+    if (password) campos.password = await bcrypt.hash(password, 10); // cambia password
 
-    await db.collection("usuarios").updateOne({ userid }, { $set: campos });
-    res.send({
-      message: `${username}, tus datos se han actualizado correctamente`,
-    });
+    await db
+      .collection("usuarios")
+      .updateOne({ _id: new ObjectId(userid) }, { $set: campos });
+    res.json({ message: "Datos actualizados correctamente" });
   } catch (error) {
     res.status(500).json({ message: "Error en el servidor", error });
   }
 });
 
-// DELETE /usuarios/eliminar
-//api.delete();
+// DELETE /usuarios/deleteuser/:userid
+api.delete("/deleteuser/:userid", async (req, res) => {
+  try {
+    const userid = req.params.userid;
+    const db = req.app.locals.db;
+
+    const usuario = await db
+      .collection("usuarios")
+      .findOne({ _id: new ObjectId(userid) });
+    if (!usuario)
+      return res.status(404).json({ message: "Usuario no encontrado" });
+
+    await db.collection("usuarios").deleteOne({ _id: new ObjectId(userid) });
+    res.json({ message: "Usuario eliminado correctamente" });
+  } catch (error) {
+    res.status(500).json({ message: "Error en el servidor", error });
+  }
+});
 
 export default api;
