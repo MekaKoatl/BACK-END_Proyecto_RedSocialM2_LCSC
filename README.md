@@ -1,5 +1,5 @@
 ﻿# BACK-END_Proyecto_RedSocialM2_LCSC
- .env = tiene la conexión con la base de datos de Mondodb Atlas
+ Por el momento .env y bs NO funciona
 
  Rutas funcionales (con local)
  - http://localhost:3000/usuarios/registro (Ya tiene contenido)
