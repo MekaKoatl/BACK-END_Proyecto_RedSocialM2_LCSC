@@ -2,15 +2,23 @@
   "name": "api",
   "version": "1.0.0",
   "description": "",
+  "keywords": [],
+  "homepage": "https://github.com/MekaKoatl/BACK-END_Proyecto_RedSocialM2_LCSC#readme",
+  "bugs": {
+    "url": "https://github.com/MekaKoatl/BACK-END_Proyecto_RedSocialM2_LCSC/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MekaKoatl/BACK-END_Proyecto_RedSocialM2_LCSC.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "module",
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
