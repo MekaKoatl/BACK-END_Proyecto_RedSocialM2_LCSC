@@ -64,6 +64,19 @@ api.post("/login", async (req, res) => {
   }
 });
 
+//getprueba
+api.get("/seeusers", async (req, res) => {
+  try {
+    const getusers = await req.app.locals.db
+      .collection("usuarios")
+      .find()
+      .toArray();
+    res.json(getusers);
+  } catch (error) {
+    res.status(500).json({ message: "Error en el servidor", error });
+  }
+});
+
 // PUT /usuarios/edituser/:userid
 api.put("/edituser/:userid", async (req, res) => {
   try {

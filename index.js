@@ -40,8 +40,5 @@ export function getDB() {
 
 app.listen(3000);
 
-connectDB().then(() => {
-  app.listen(3000, () => console.log("Servidor en puerto 3000"));
-});
 
 export default app;
